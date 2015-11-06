@@ -8,6 +8,7 @@ set_cfg()
 [[ -n $ACL_DATACENTER ]] && set_cfg acl_datacenter $ACL_DATACENTER
 [[ -n $ACL_DEFAULT_POLICY ]] && set_cfg acl_default_policy $ACL_DEFAULT_POLICY
 [[ -n $ACL_DOWN_POLICY ]] && set_cfg acl_down_policy $ACL_DOWN_POLICY
+[[ -n $ACL_MASTER_TOKEN ]] && set_cfg acl_master_token $ACL_MASTER_TOKEN
 [[ -n $ACL_TOKEN ]] && set_cfg acl_token $ACL_TOKEN
 
 instance_ipv4=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
