@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set_cfg()
+{
+  echo "{\"$1\": \"$2\"}" > "/config/$1.json"
+}
+
+[[ -n $ACL_DATACENTER ]] && set_cfg acl_datacenter $ACL_DATACENTER
+[[ -n $ACL_DEFAULT_POLICY ]] && set_cfg acl_default_policy $ACL_DEFAULT_POLICY
+[[ -n $ACL_DOWN_POLICY ]] && set_cfg acl_down_policy $ACL_DOWN_POLICY
+[[ -n $ACL_TOKEN ]] && set_cfg acl_token $ACL_TOKEN
+
+instance_ipv4=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+instance_hostname=$(curl -s http://169.254.169.254/latest/meta-data/local-hostname | cut -d. -f1)
+
+exec /bin/consul agent -advertise=$instance_ipv4 -node=$instance_hostname -config-dir=/config "$@"
