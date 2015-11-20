@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eo pipefail
+
+instance_ipv4=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+instance_hostname=$(curl -s http://169.254.169.254/latest/meta-data/local-hostname | cut -d. -f1)
+
+export ES_JAVA_OPTS=("-Des.node.name=$instance_hostname -Des.network.publish_host=$instance_ipv4" \
+                     "-Des.discovery.zen.ping.multicast.enabled=false -Des.cloud.node.auto_attributes=true" \
+                     "-Des.cluster.routing.allocation.awareness.attributes=aws_availability_zone $ES_JAVA_OPTS")
+exec /docker-entrypoint.sh "$@"
