@@ -15,6 +15,7 @@ set_cfg()
 
 instance_ipv4=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 instance_hostname=$(curl -s http://169.254.169.254/latest/meta-data/local-hostname | cut -d. -f1)
+instance_region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq .region -r)
 
 export GOMAXPROCS=$(getconf _NPROCESSORS_ONLN)
-exec /bin/consul agent -advertise=$instance_ipv4 -node=$instance_hostname -config-dir=/config "$@"
+exec /bin/consul agent -advertise=$instance_ipv4 -node=$instance_hostname -dc=$instance_region -config-dir=/config "$@"
