@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -eo pipefail
+
+main() {
+  local docker_opts source_tree tag
+
+  while [[ -n "$1" && "$1" != "--" ]]; do
+    docker_opts="$docker_opts $1"
+    shift
+  done
+
+  [[ "$1" == "--" ]] && shift
+  if [[ -z "$@" ]]; then
+    set -- $docker_opts
+    unset docker_opts
+  fi
+
+  source_tree="$1"
+  tag="$2"
+
+  if [[ -z "$source_tree"  || -z "$tag" ]]; then
+    echo "usage: buildpack-build [<docker-opts> --] <source-tree> <tag>" >&2
+    exit 1
+  fi
+
+  generic-build $docker_opts -- "$source_tree" "${BUILDSTEP:-progrium/buildstep}" "$tag" /bin/bash -c "mkdir -p /app && tar -xC /app && /build/builder"
+}
+
+main "$@"

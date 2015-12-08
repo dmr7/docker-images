@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -eo pipefail
+
+main() {
+  local slug="$1"
+  local tag="$2"
+
+  if [[ -z "$slug" || -z "$tag" ]]; then
+    echo "usage: image-from-slug <slug> <tag>" >&2
+    exit 1
+  fi
+
+  mkdir -p "$tmpdir/app"
+  tar -C "$tmpdir/app" -xzf "$slug"
+  cat <<DOCKERFILE > "$tmpdir/Dockerfile"
+  FROM ${CEDARISH:-progrium/cedarish:cedar14}
+  ADD app /app/
+  RUN curl -sSL https://github.com/gliderlabs/herokuish/releases/download/v0.3.1/herokuish_0.3.1_linux_x86_64.tgz | tar -xzC /bin \
+   && groupadd -g 2000 app \
+   && useradd -u 2000 -g 2000 -d /app -M -s /bin/bash app \
+   && chown -R app:app /app
+  ENV USER app
+  WORKDIR /app
+  ENTRYPOINT ["/bin/herokuish", "procfile", "exec"]
+DOCKERFILE
+
+  docker build -t "$tag" "$tmpdir"
+}
+
+finish() {
+  rm -rf "$tmpdir"
+}
+
+tmpdir="$(mktemp -d)"
+trap finish EXIT
+main "$@"

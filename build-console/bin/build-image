@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -eo pipefail
+
+main() {
+  local source_tree="$1"
+  local tag="$2"
+
+  if [[ -z "$source_tree" || -z "$tag" ]]; then
+    echo "usage: build-image <source-tree> <tag>" >&2
+    exit 1
+  fi
+
+  build-slug "$source_tree" "$tmpdir/slug.tgz"
+  image-from-slug "$tmpdir/slug.tgz" "$tag"
+}
+
+finish() {
+  rm -rf "$tmpdir"
+}
+
+tmpdir="$(mktemp -d)"
+trap finish EXIT
+main "$@"

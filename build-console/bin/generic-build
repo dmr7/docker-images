@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -eo pipefail
+
+main() {
+
+  local docker_opts source_tree image tag
+
+  while [[ -n "$1" && "$1" != "--" ]]; do
+    docker_opts="$docker_opts $1"
+    shift
+  done
+
+  [[ "$1" == "--" ]] && shift
+  if [[ -z "$@" ]]; then
+    set -- $docker_opts
+    unset docker_opts
+  fi
+
+  source_tree="$1"
+  image="$2"
+  tag="$3"
+
+  if [[  -z "$source_tree" || -z "$image" || -z "$tag" ]]; then
+    echo "usage: generic-build [<docker-opts> --] <source-tree> <image> <tag> [<command>]" >&2
+    exit 1
+  fi
+
+  shift; shift; shift
+  id=$(tar -C "$source_tree" -cf - . | docker run -i -a stdin $docker_opts "$image" "$@")
+  docker attach $id
+  test $(docker wait $id) -eq 0
+
+  if [[ -n "$tag" ]]; then
+    docker commit $id "$tag"
+  fi
+}
+
+main "$@"

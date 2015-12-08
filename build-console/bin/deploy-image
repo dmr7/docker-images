@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -eo pipefail
+
+main() {
+  local tag="$1"
+  local region="$2"
+  local env="$3"
+  local cluster="$4"
+  local app="$5"
+  local deploy_tag
+
+  if [[ -z "$tag" || -z "$region" || -z "$env" || -z "$cluster" || -z "$app" ]]; then
+    echo "usage: deploy-image <tag> <region> <env> <cluster> <app>" >&2
+    exit 1
+  fi
+
+  deploy_tag = "${DOCKER_REPOSITORY:+$DOCKER_REPOSITORY/}$tag"
+  docker tag -f "$tag" "$deploy_tag"
+  docker push "$deploy_tag"
+  EMPIRE_API_URL="https://$cluster.$env.$region.w-grp.net" emp deploy -a "$app" "$deploy_tag"
+}
+
+main "$@"
