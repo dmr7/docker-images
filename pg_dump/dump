@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eo pipefail
+
+main() {
+  local database="$1"
+  local s3_url="$2"
+
+  if [[ -z "$database" || -z "$s3_url" ]]; then
+    echo "usage: pg_dump <database> <s3-url>" >&2
+    exit 1
+  fi
+
+  pg_dump -vFc "$database" | aws s3 cp - "$s3_url" --sse
+}
+
+main "$@"
