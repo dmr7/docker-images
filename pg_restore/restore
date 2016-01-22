@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eo pipefail
+
+main() {
+  local s3_url="$1"
+  local database="$2"
+
+  if [[ -z "$s3_url" || -z "$database" ]]; then
+    echo "usage: pg_restore <s3-url> <database>" >&2
+    exit 1
+  fi
+
+  dropdb --if-exists -e "$database"
+  createdb -eT template0 "$database"
+  aws s3 cp "$s3_url" - | pg_restore -evd "$database"
+}
+
+main "$@"
