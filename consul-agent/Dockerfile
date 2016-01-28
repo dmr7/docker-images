@@ -1,4 +1,4 @@
-FROM gliderlabs/consul:0.5
+FROM gliderlabs/consul:0.6
 MAINTAINER WOW! Group Development
 
 RUN apk --update add jq && rm -rf /var/cache/apk/*
