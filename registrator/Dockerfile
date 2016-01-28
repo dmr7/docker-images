@@ -1,4 +1,4 @@
-FROM gliderlabs/registrator:master
+FROM gliderlabs/registrator
 MAINTAINER WOW! Group Development
 
 RUN apk -Uv add curl \
