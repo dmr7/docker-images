@@ -5,4 +5,4 @@ set -eo pipefail
 instance_ipv4=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 instance_az=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
 
-exec /bin/registrator -ip $instance_ipv4 -tags "zone=$instance_az" "$@" consul://$instance_ipv4:8500
+exec /bin/registrator -ip $instance_ipv4 -tags "zone-$instance_az" "$@" consul://$instance_ipv4:8500
