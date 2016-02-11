@@ -7,12 +7,12 @@ set_cfg()
   echo "{\"$1\": \"$2\"}" > "/config/$1.json"
 }
 
-[[ -n $ACL_DATACENTER ]] && set_cfg acl_datacenter $ACL_DATACENTER
-[[ -n $ACL_DEFAULT_POLICY ]] && set_cfg acl_default_policy $ACL_DEFAULT_POLICY
-[[ -n $ACL_DOWN_POLICY ]] && set_cfg acl_down_policy $ACL_DOWN_POLICY
-[[ -n $ACL_MASTER_TOKEN ]] && set_cfg acl_master_token $ACL_MASTER_TOKEN
-[[ -n $ACL_TOKEN ]] && set_cfg acl_token $ACL_TOKEN
-[[ -n $ENCRYPT_KEY ]] && set_cfg encrypt $ENCRYPT_KEY
+[[ -n "$ACL_DATACENTER" ]] && set_cfg acl_datacenter "$ACL_DATACENTER"
+[[ -n "$ACL_DEFAULT_POLICY" ]] && set_cfg acl_default_policy "$ACL_DEFAULT_POLICY"
+[[ -n "$ACL_DOWN_POLICY" ]] && set_cfg acl_down_policy "$ACL_DOWN_POLICY"
+[[ -n "$ACL_MASTER_TOKEN" ]] && set_cfg acl_master_token "$ACL_MASTER_TOKEN"
+[[ -n "$ACL_TOKEN" ]] && set_cfg acl_token "$ACL_TOKEN"
+[[ -n "$ENCRYPT_KEY" ]] && set_cfg encrypt "$ENCRYPT_KEY"
 
 export GOMAXPROCS=$(getconf _NPROCESSORS_ONLN)
 exec /bin/consul agent -config-dir=/config "$@"
