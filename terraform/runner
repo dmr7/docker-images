@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eo pipefail
+
+tar --exclude .terraform -C /workspace -xf -
+terraform get
+exec terraform "$@"
