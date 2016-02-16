@@ -8,6 +8,8 @@ RUN apk -Uv add ca-certificates \
  && mkdir -p /workspace \
  && rm -rf /tmp/terraform.zip /var/cache/apk/*
 
+ADD bin/terraform-provider-fleet /usr/local/bin/
+ADD .terraformrc /root/
 ADD runner /
 WORKDIR /workspace
 ENTRYPOINT ["/runner"]
