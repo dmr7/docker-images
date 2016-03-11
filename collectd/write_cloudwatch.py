@@ -102,7 +102,10 @@ def plugin_write(vl, config):
     data = []
 
     for i, v in enumerate(vl.values):
-        name, unit, dims = metrics_list[i]
+        fullname, unit, dims = metrics_list[i]
+        name = fullname[:255]
+        if len(name) < len(fullname):
+            collectd.warning('Metric name was truncated for CloudWatch: {}'.format(fullname))
 
         data.append(dict(
             MetricName=name,
