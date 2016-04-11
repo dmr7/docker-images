@@ -1,4 +1,4 @@
-FROM gliderlabs/consul:0.6
+FROM gliderlabs/consul
 MAINTAINER WOW! Group Development
 
 ADD ./runner /runner
