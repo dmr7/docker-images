@@ -13,6 +13,7 @@ RUN apt-get -y update \
 
 ADD forego /usr/local/bin/
 ADD Procfile /
-ADD app.conf.tmpl /etc/
+ADD nginx.conf.tmpl /etc/nginx/
 
+EXPOSE 8080 8081
 CMD ["forego", "start", "-f", "/Procfile"]
