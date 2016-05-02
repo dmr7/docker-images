@@ -94,28 +94,31 @@ def plugin_config(cfg, config):
                 config.dimensions.append(dict(Name=dim.key, Value=dim.values[0]))
 
 def plugin_write(vl, config):
-    session = boto3.session.Session(region_name=config.aws_region)
-    client_config = botocore.client.Config(connect_timeout=5, read_timeout=5)
-    client = session.client('cloudwatch', config=client_config)
-    metrics_list = list(metrics(vl, config))
-    ts = datetime.fromtimestamp(vl.time)
-    data = []
+    try:
+        session = boto3.session.Session(region_name=config.aws_region)
+        client_config = botocore.client.Config(connect_timeout=5, read_timeout=5)
+        client = session.client('cloudwatch', config=client_config)
+        metrics_list = list(metrics(vl, config))
+        ts = datetime.fromtimestamp(vl.time)
+        data = []
 
-    for i, v in enumerate(vl.values):
-        fullname, unit, dims = metrics_list[i]
-        name = fullname[:255]
-        if len(name) < len(fullname):
-            collectd.warning('Metric name was truncated for CloudWatch: {}'.format(fullname))
+        for i, v in enumerate(vl.values):
+            fullname, unit, dims = metrics_list[i]
+            name = fullname[:255]
+            if len(name) < len(fullname):
+                collectd.warning('Metric name was truncated for CloudWatch: {}'.format(fullname))
 
-        data.append(dict(
-            MetricName=name,
-            Timestamp=ts,
-            Value=v,
-            Unit=unit,
-            Dimensions=dims
-        ))
+            data.append(dict(
+                MetricName=name,
+                Timestamp=ts,
+                Value=v,
+                Unit=unit,
+                Dimensions=dims
+            ))
 
-    client.put_metric_data(Namespace=vl.plugin, MetricData=data)
+        client.put_metric_data(Namespace=vl.plugin, MetricData=data)
+    except Exception, e:
+        collectd.error(str(e))
 
 def plugin_init():
     collectd.info('Initializing write_cloudwatch')
