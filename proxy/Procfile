@@ -1,2 +1,0 @@
-tmpl: consul-template -consul $CONSUL_API -template "/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf:nginx -s reload"
-nginx: nginx -g "daemon off;"

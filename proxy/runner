@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eo pipefail
+
+consul-template -consul ${CONSUL_API:-consul.service.consul:8500} -template "/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf:nginx -s reload" &
+nginx -g "daemon off;"
