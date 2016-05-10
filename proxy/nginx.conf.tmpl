@@ -22,6 +22,11 @@ http {
     {{end}}
   }
 
+  map $http_x_forwarded_proto $add_x_forwarded_proto {
+    default $http_x_forwarded_proto;
+    '' $scheme;
+  }
+
   server {
     listen 8080 default_server;
     server_name _;
@@ -30,7 +35,8 @@ http {
     proxy_set_header Connection "";
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-Proto $add_x_forwarded_proto;
 
     location / {
       proxy_pass http://backend;
