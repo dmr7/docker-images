@@ -1,0 +1,19 @@
+vcl 4.0;
+import directors;
+
+{{range $index, $svc := env "BACKEND" | service}}
+backend server{{$index}} {
+  .host = "{{.Address}}";
+  .port = "{{.Port}}";
+}
+{{end}}
+
+sub vcl_init {
+  new vdir = directors.round_robin();
+  {{range $index, $svc := env "BACKEND" | service}}
+  vdir.add_backend(server{{$index}});{{end}}
+}
+
+sub vcl_recv {
+  set req.backend_hint = vdir.backend();
+}

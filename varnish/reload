@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eo pipefail
+
+new_config="reload_$(date +%FT%H:%M:%S)"
+varnishadm vcl.load $new_config /etc/varnish/default.vcl
+varnishadm vcl.use $new_config
