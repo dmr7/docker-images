@@ -1,8 +1,8 @@
-FROM alpine:edge
+FROM alpine:3.4
 MAINTAINER WOW! Group Development
 
 RUN apk -Uv add varnish su-exec openssl \
- && apk add -UvX http://dl-cdn.alpinelinux.org/alpine/edge/community/ tini \
+ && apk add -UvX http://dl-cdn.alpinelinux.org/alpine/v3.4/community/ tini \
  && wget -O /tmp/cnsltmpl.zip https://releases.hashicorp.com/consul-template/0.14.0/consul-template_0.14.0_linux_amd64.zip \
  && unzip /tmp/cnsltmpl.zip -d /usr/local/bin \
  && chmod +x /usr/local/bin/consul-template \
