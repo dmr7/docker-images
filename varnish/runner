@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eo pipefail
 
 (sleep 2; consul-template -consul ${CONSUL_API:-consul.service.consul:8500} -template "/etc/varnish/default.vcl.tmpl:/etc/varnish/default.vcl:/reload") &
-exec su-exec varnish varnishd -F -a 0.0.0.0:8080 -f /etc/varnish/default.vcl
+exec varnishd -F -a 0.0.0.0:8080 -f /etc/varnish/default.vcl
