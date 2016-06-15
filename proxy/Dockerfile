@@ -10,7 +10,7 @@ RUN apt-get -y update \
  && apt-get -y remove --purge curl unzip \
  && apt-get -y autoremove --purge \
  && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/nginx/conf.d/* \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/nginx/nginx.conf /etc/nginx/conf.d/* \
  && chmod +x /runner
 
 ADD nginx.conf.tmpl /etc/nginx/
