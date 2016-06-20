@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eo pipefail
+
+mkdir -p /etc/saml/
+curl -Lo /etc/saml/idp-metadata.xml "$SAML_IDP_METADATA_URL"
+curl -Lo /etc/saml/sp-metadata.xml "$SAML_SP_METADATA_URL"
+curl -Lo /etc/ssl/certs/saml-sp.crt "$SAML_SP_CERT_URL"
+(umask 077; curl -Lo /etc/ssl/private/saml-sp.key "$SAML_SP_KEY_URL")
+
+# https://github.com/UNINETT/mod_auth_mellon/issues/63
+consul-template -once -consul ${CONSUL_API:-consul.service.consul:8500} -template "/usr/local/apache2/conf/httpd.conf.tmpl:/usr/local/apache2/conf/httpd.conf"
+(sleep 2; consul-template -consul ${CONSUL_API:-consul.service.consul:8500} -template "/usr/local/apache2/conf/httpd.conf.tmpl:/usr/local/apache2/conf/httpd.conf:/usr/local/apache2/bin/apachectl -k graceful") &
+exec "$@"

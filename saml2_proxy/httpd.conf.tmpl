@@ -1,0 +1,50 @@
+ServerRoot "/usr/local/apache2"
+ServerName {{ env "SERVER_NAME" }}
+Listen 80
+
+LoadModule authn_core_module modules/mod_authn_core.so
+LoadModule authz_core_module modules/mod_authz_core.so
+LoadModule authz_user_module modules/mod_authz_user.so
+LoadModule auth_mellon_module modules/mod_auth_mellon.so
+LoadModule headers_module modules/mod_headers.so
+LoadModule log_config_module modules/mod_log_config.so
+LoadModule slotmem_shm_module modules/mod_slotmem_shm.so
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+LoadModule lbmethod_byrequests_module modules/mod_lbmethod_byrequests.so
+LoadModule access_compat_module modules/mod_access_compat.so
+LoadModule unixd_module modules/mod_unixd.so
+
+User daemon
+Group daemon
+
+LogLevel debug
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+CustomLog /proc/self/fd/1 common
+ErrorLog /proc/self/fd/2
+ProxyRequests off
+
+<Proxy balancer://backend>
+  {{range env "BACKEND" | service }}BalancerMember http://{{.Address}}:{{.Port}}
+  {{end}}
+</Proxy>
+
+<Location />
+  AuthType Mellon
+  Require valid-user
+  RequestHeader set X-WEBAUTH-USER %{MELLON_NAME_ID}e env=MELLON_NAME_ID
+
+  MellonEnable auth
+  MellonSPPrivateKeyFile /etc/ssl/private/saml-sp.key
+  MellonSPCertFile /etc/ssl/certs/saml-sp.crt
+  MellonSPMetadataFile /etc/saml/sp-metadata.xml
+  MellonIdPMetadataFile /etc/saml/idp-metadata.xml
+  MellonEndpointPath /_saml2
+  {{range $attr, $values := env "SAML_REQUIRE" | parseJSON}}MellonRequire $attr{{range $values}} "{{.}}"{{end}}
+  {{end}}
+  RequestHeader unset Authorization
+  ProxyPass balancer://backend/
+  ProxyPassReverse balancer://backend/
+</Location>
