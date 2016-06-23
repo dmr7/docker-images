@@ -27,7 +27,8 @@ ErrorLog /proc/self/fd/2
 ProxyRequests off
 
 <Proxy balancer://backend>
-  {{range env "BACKEND" | service }}BalancerMember http://{{.Address}}:{{.Port}}
+  {{range env "BACKEND" | service -}}
+    BalancerMember http://{{.Address}}:{{if env "BACKEND_PORT"}}{{env "BACKEND_PORT"}}{{else}}{{.Port}}{{end}}
   {{end}}
 </Proxy>
 
@@ -42,7 +43,8 @@ ProxyRequests off
   MellonSPMetadataFile /etc/saml/sp-metadata.xml
   MellonIdPMetadataFile /etc/saml/idp-metadata.xml
   MellonEndpointPath /_saml2
-  {{range $attr, $values := env "SAML_REQUIRE" | parseJSON}}MellonRequire $attr{{range $values}} "{{.}}"{{end}}
+  {{range $attr, $expr := env "SAML_COND" | parseJSON -}}
+    MellonCond $attr $expr
   {{end}}
   RequestHeader unset Authorization
   ProxyPass balancer://backend/
