@@ -35,7 +35,6 @@ ProxyRequests off
 <Location />
   AuthType Mellon
   Require valid-user
-  RequestHeader set X-WEBAUTH-USER %{MELLON_NAME_ID}e env=MELLON_NAME_ID
 
   MellonEnable auth
   MellonSPPrivateKeyFile /etc/ssl/private/saml-sp.key
@@ -43,10 +42,13 @@ ProxyRequests off
   MellonSPMetadataFile /etc/saml/sp-metadata.xml
   MellonIdPMetadataFile /etc/saml/idp-metadata.xml
   MellonEndpointPath /_saml2
-  {{range $attr, $expr := env "SAML_COND" | parseJSON -}}
-    MellonCond $attr $expr
+  MellonMergeEnvVars On ":"
+  {{range $attr, $expr := env "CONDITIONS" | parseJSON -}}
+    MellonCond {{$attr}} {{$expr}}
   {{end}}
-  RequestHeader unset Authorization
+  {{range $name, $expr := env "PROXY_HEADERS" | parseJSON -}}
+    RequestHeader set {{$name}} {{$expr}}
+  {{end}}
   ProxyPass balancer://backend/
   ProxyPassReverse balancer://backend/
 </Location>
