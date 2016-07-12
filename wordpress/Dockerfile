@@ -1,4 +1,4 @@
-FROM wordpress
+FROM wordpress:4.5.3
 MAINTAINER WOW! Group Development
 
 RUN apt-get -y update \
