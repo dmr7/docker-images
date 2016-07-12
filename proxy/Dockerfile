@@ -13,7 +13,7 @@ RUN apt-get -y update \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/nginx/nginx.conf /etc/nginx/conf.d/* \
  && chmod +x /runner
 
-ADD nginx.conf.tmpl /etc/nginx/
+ADD nginx.conf.tmpl http.conf /etc/nginx/
 
 EXPOSE 8080 8081
 CMD ["/runner"]

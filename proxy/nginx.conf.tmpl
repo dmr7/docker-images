@@ -38,9 +38,7 @@ http {
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-Proto $add_x_forwarded_proto;
 
-    location / {
-      proxy_pass http://backend;
-    }
+    include http.conf;
   }
 }
 
