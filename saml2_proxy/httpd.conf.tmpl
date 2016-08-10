@@ -1,6 +1,6 @@
 ServerRoot "/usr/local/apache2"
 ServerName {{ env "SERVER_NAME" }}
-Listen 80
+Listen 8080
 
 LoadModule authn_core_module modules/mod_authn_core.so
 LoadModule authz_core_module modules/mod_authz_core.so

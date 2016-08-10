@@ -19,5 +19,6 @@ ADD runner /
 ADD mod_auth_mellon.so /usr/local/apache2/modules/
 ADD httpd.conf.tmpl /usr/local/apache2/conf/
 
+EXPOSE 8080
 ENTRYPOINT ["/runner"]
 CMD ["httpd-foreground"]
