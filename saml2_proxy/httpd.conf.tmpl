@@ -19,7 +19,6 @@ LoadModule unixd_module modules/mod_unixd.so
 User daemon
 Group daemon
 
-LogLevel debug
 LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
 LogFormat "%h %l %u %t \"%r\" %>s %b" common
 CustomLog /proc/self/fd/1 common
