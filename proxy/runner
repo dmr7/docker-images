@@ -3,5 +3,5 @@
 set -eo pipefail
 
 consul-template -once -consul ${CONSUL_API:-consul.service.consul:8500} -template "/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf"
-(sleep 3; consul-template -consul ${CONSUL_API:-consul.service.consul:8500} -template "/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf:nginx -s reload") &
+(sleep 3; consul-template -consul ${CONSUL_API:-consul.service.consul:8500} -template "/etc/nginx/nginx.conf.tmpl:/etc/nginx/nginx.conf:nginx -s reload || true") &
 nginx -g "daemon off;"
