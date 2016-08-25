@@ -4,7 +4,7 @@ MAINTAINER WOW! Group Development
 ADD runner /
 RUN apt-get -y update \
  && apt-get -y install curl unzip \
- && curl -sSL -o /tmp/cnsltmpl.zip https://releases.hashicorp.com/consul-template/0.14.0/consul-template_0.14.0_linux_amd64.zip \
+ && curl -sSL -o /tmp/cnsltmpl.zip https://releases.hashicorp.com/consul-template/0.15.0/consul-template_0.15.0_linux_amd64.zip \
  && unzip /tmp/cnsltmpl.zip -d /usr/local/bin \
  && chmod +x /usr/local/bin/consul-template \
  && apt-get -y remove --purge curl unzip \
