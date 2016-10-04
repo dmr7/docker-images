@@ -24,7 +24,6 @@ LogFormat "%h %l %u %t \"%r\" %>s %b" common
 CustomLog /proc/self/fd/1 common
 ErrorLog /proc/self/fd/2
 ProxyRequests off
-LimitRequestLine 16384
 
 <Proxy balancer://backend>
   {{range env "BACKEND" | service -}}
@@ -52,3 +51,5 @@ LimitRequestLine 16384
   ProxyPass balancer://backend/
   ProxyPassReverse balancer://backend/
 </Location>
+
+IncludeOptional conf/extra.con[f]
