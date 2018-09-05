@@ -3,5 +3,5 @@
 set -eo pipefail
 
 tar --exclude .terraform -C /workspace -xf -
-terraform get
+terraform init
 exec terraform "$@"
