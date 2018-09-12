@@ -11,7 +11,6 @@ RUN apk -Uv add ca-certificates zip mysql-client \
 
 COPY bin /root/.terraform.d/plugins
 ADD bin/terraform-provider-fleet /usr/local/bin/
-ADD bin/terraform-provider-elasticsearch /usr/local/bin/
 ADD .terraformrc /root/
 ADD runner /
 WORKDIR /workspace
