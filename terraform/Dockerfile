@@ -9,7 +9,7 @@ RUN apk -Uv add ca-certificates zip mysql-client \
  && rm -rf /tmp/terraform.zip /var/cache/apk/* \
  && mkdir /root/.terraform.d
 
-COPY bin /root/.terraform.d/plugins
+COPY plugins /root/.terraform.d/plugins
 ADD runner /
 WORKDIR /workspace
 ENTRYPOINT ["/runner"]
